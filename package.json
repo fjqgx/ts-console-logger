@@ -3,6 +3,12 @@
   "version": "1.0.1",
   "description": "logger",
   "main": "./dist/ts-console-logger.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "dist",
+    "demo",
+    "types"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --mode=development --config script/webpack.config.js",
