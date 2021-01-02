@@ -1,4 +1,6 @@
 const path = require("path");
+const webpack = require('webpack');
+const packageinfo = require('../package.json');
 
 var config = {
   entry: "./src/index.ts",
@@ -17,7 +19,12 @@ var config = {
   output: {
     filename: "ts-console-logger.js",
     path: path.resolve(__dirname, "../dist")
-  }
+  },
+  plugins: [
+    new webpack.BannerPlugin({
+      banner: packageinfo.name + " - ver " + packageinfo.version + " created:" + new Date().toLocaleString()
+    })
+  ]
 };
 console.log(path.resolve(__dirname, "../dist"));
 

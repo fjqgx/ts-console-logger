@@ -1,8 +1,12 @@
 
+import { TimeStampUtil } from "../util/timestamputil";
+import { IConfig } from "./interface";
+
 export class TSConsoleLogger {
 
   private config: IConfig
   private enableLog: boolean = false;
+  private timeStampUtil ?: TimeStampUtil;
 
   constructor (con: IConfig) {
     this.config = con;
@@ -10,7 +14,7 @@ export class TSConsoleLogger {
   }
 
   /**
-   * DEBUG 级别的日志
+   * DEBUG Level
    */
   public debug (): void {
     let args = Array.prototype.slice.call(arguments);
@@ -21,7 +25,7 @@ export class TSConsoleLogger {
   }
 
   /**
-   * INFO 级别的日志
+   * INFO Level
    */
   public info (): void {
     let args = Array.prototype.slice.call(arguments);
@@ -32,7 +36,7 @@ export class TSConsoleLogger {
   }
 
   /**
-   * WARNING 级别的日志
+   * WARNING Level
    */
   public warn (): void {
     let args = Array.prototype.slice.call(arguments);
@@ -43,7 +47,7 @@ export class TSConsoleLogger {
   }
 
   /**
-   * ERROR 级别的日志
+   * ERROR Level
    */
   public error (): void {
     let args = Array.prototype.slice.call(arguments);
@@ -53,23 +57,28 @@ export class TSConsoleLogger {
     }
   }
 
-  /**
-   * 初始化
-   */
   private init (): void {
-    if (this.config && this.config.key && document && document.cookie) {
-      let arr = document.cookie.split(";");
-      for (let i = 0; i < arr.length; ++i) {
-        if (arr[i] === (this.config.key + "=true")) {
-          this.enableLog = true;
-          break;
+    if (this.config) {
+      if (this.config.key) {
+        if (window && window.localStorage) {
+          this.enableLog = window.localStorage.getItem(this.config.key) === "true";
         }
+      }
+
+      if (this.config.tagConfig) {
+        this.timeStampUtil = new TimeStampUtil(this.config.tagConfig.timestamp);
       }
     }
   }
   
-
   private getCurrentTime (): string {
-    return "[" + new Date().toISOString() + "]";
+    if (this.timeStampUtil) {
+      let currentTime = this.timeStampUtil.getCurrentTimeStamp();
+      if (currentTime) {
+        return "[" + currentTime + "]";
+      }
+    }
+    return "";
   }
+
 }

@@ -4,10 +4,34 @@
     <script src="../dist/ts-console-logger.js" ></script>
   </head>
   <body>
-    
+    <P>
+      日志工具
+    </P>
+    <P>
+      <input type="checkbox" id="switch-log" checked>open log</input>
+      <input type="checkbox" id="timestamp-tag" checked>timestamp tag</input>
+    </P>
+    <p>
+      <button id="startBtn">start</button>
+    </p>
   </body>
   <script>
-    var logger = new TSConsoleLogger({key: "test"});
-    logger.debug("dsafb", {a: 1}, "dwef")
+    const key = "test";
+
+    var switchBtn = document.getElementById("switch-log");
+    var timestampBtn = document.getElementById("timestamp-tag");
+    var startBtn = document.getElementById("startBtn");
+    startBtn.addEventListener("click", function() {
+      let option = {tagConfig: {}};
+      if (switchBtn.checked) {
+        option.key = key;
+      }
+      
+      if (timestampBtn.checked) {
+        option.tagConfig.timestamp = "second";
+      }
+      var logger = new TSConsoleLogger(option);
+      logger.debug("[module name]", {a: 1}, "dwef")
+    })
   </script>
 </html>

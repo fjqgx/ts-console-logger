@@ -17,13 +17,17 @@ export enum TimeStampType {
 }
 
 
-export interface 中文 {
+export interface ILevelConfig {
   level: LoggerLevel;   // 日志等级
   color ?: string;
 }
 
+export interface ITimeStampConfig {
+  type?: TimeStampType;  // default: ms.   ms: millisecond; s: second; m: minute; h: hour; d: day
+}
+
 export interface ITagConfig {
-  timestamp ?: TimeStampType;
+  timestamp ?: ITimeStampConfig;
 }
 
 export interface IConfig {
