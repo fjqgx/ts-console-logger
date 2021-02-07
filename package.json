@@ -1,6 +1,6 @@
 {
-  "name": "devicemanager",
-  "version": "1.0.0",
+  "name": "webrtc-devicemanager",
+  "version": "1.0.1",
   "description": "device management of browser",
   "main": "./dist/devicemanager.js",
   "types": "types/index.d.ts",
