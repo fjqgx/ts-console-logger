@@ -1,14 +1,15 @@
-import { TSConsoleLogger } from "./core/logger";
+import { DeviceManager } from "./core/devicemanager";
+
 
 declare global {
   interface Window {
-    TSConsoleLogger: any;
+    DeviceManager: any;
     define: any;
   }
 }
 
 if (window) {
-  window.TSConsoleLogger = TSConsoleLogger;
+  window.DeviceManager = DeviceManager;
 }
 
-export default TSConsoleLogger;
+export default DeviceManager;

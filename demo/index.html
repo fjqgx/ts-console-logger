@@ -1,37 +1,86 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="../dist/ts-console-logger.js" ></script>
+    <title>Device Check</title>
+    <script src="../dist/devicemanager" ></script>
   </head>
   <body>
     <P>
-      日志工具
-    </P>
-    <P>
-      <input type="checkbox" id="switch-log" checked>open log</input>
-      <input type="checkbox" id="timestamp-tag" checked>timestamp tag</input>
+      <span>video device list</span>
+      <select id="camera-select"></select>
+      <button id="camera-button">getCameraList</button>
+      <button id="camera-video-button">get camera</button>
+
+      <span>audio device list</span>
+      <select id="audio-select"></select>
+      <button id="audio-button">getMicList</button>
+
+      <button id="release-button" >release device</button>
     </P>
     <p>
-      <button id="startBtn">start</button>
+      <tr>
+        <td>
+          <video id="camera-video" style="width: 640px; height: 480px;" autoplay></video>
+          <button id="camera-video-stop-button">stop</button>
+        </td>
+      </tr>
+      
     </p>
   </body>
   <script>
-    const key = "test";
+    let devicemanager = new DeviceManager();
 
-    var switchBtn = document.getElementById("switch-log");
-    var timestampBtn = document.getElementById("timestamp-tag");
-    var startBtn = document.getElementById("startBtn");
-    startBtn.addEventListener("click", function() {
-      let option = {tagConfig: {}};
-      if (switchBtn.checked) {
-        option.key = key;
+    let cameraButton = document.getElementById("camera-button");
+    let cameraSelect = document.getElementById("camera-select");
+    let cameraVideoBtuuton = document.getElementById("camera-video-button");
+    let audioButton = document.getElementById("audio-button");
+    let audioSelect = document.getElementById("audio-select");
+    let releaseButton = document.getElementById("release-button");
+
+    let cameraVideo = document.getElementById("camera-video");
+    let cameraVideoStopButton = document.getElementById("camera-video-stop-button");
+    
+    cameraButton.addEventListener("click", () => {
+      devicemanager.getCameraList().then((list) => {
+        for (let i = 0; i < list.length; ++i) {
+          cameraSelect.options[cameraSelect.options.length] = new Option(list[i].label, list[i].deviceId)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    })
+
+    cameraVideoBtuuton.addEventListener("click", () => {
+      devicemanager.getVideoTrack({}).then((videotrack) => {
+        let mediastream = new MediaStream();
+        mediastream.addTrack(videotrack);
+        cameraVideo.srcObject = mediastream;
+      }).catch((err) => {
+        console.log("aaaa");
+      })
+    })
+    
+    audioButton.addEventListener("click", () => {
+      devicemanager.getMicList().then((list) => {
+        for (let i = 0; i < list.length; ++i) {
+          audioSelect.options[audioSelect.options.length] = new Option(list[i].label, list[i].deviceId);
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    }) 
+    
+    releaseButton.addEventListener("click", () => {
+      devicemanager.releaseAllStream();
+    })
+
+    cameraVideoStopButton.addEventListener("click", () => {
+      if (cameraVideo.srcObject) {
+        cameraVideo.srcObject.getTracks().forEach(element => {
+          element.stop();
+        });
+        cameraVideo.srcObject = null;
       }
-      
-      if (timestampBtn.checked) {
-        option.tagConfig.timestamp = "second";
-      }
-      var logger = new TSConsoleLogger(option);
-      logger.debug("[module name]", {a: 1}, "dwef")
     })
   </script>
 </html>

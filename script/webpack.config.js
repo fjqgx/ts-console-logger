@@ -17,7 +17,7 @@ var config = {
     extensions: [".tsx", ".ts", ".js"]
   },
   output: {
-    filename: "ts-console-logger.js",
+    filename: packageinfo.name,
     path: path.resolve(__dirname, "../dist")
   },
   plugins: [
@@ -26,7 +26,6 @@ var config = {
     })
   ]
 };
-console.log(path.resolve(__dirname, "../dist"));
 
 module.exports = (env, argv) => {
   if (argv.mode === "development") {
