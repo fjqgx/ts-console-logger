@@ -1,15 +1,14 @@
-import { DeviceManager } from "./core/devicemanager";
-
+import { BrowserDeviceManager } from "./core/browserdevicemanager";
 
 declare global {
   interface Window {
-    DeviceManager: any;
+    BrowserDeviceManager: any;
     define: any;
   }
 }
 
 if (window) {
-  window.DeviceManager = DeviceManager;
+  window.BrowserDeviceManager = BrowserDeviceManager;
 }
 
-export default DeviceManager;
+export { BrowserDeviceManager };

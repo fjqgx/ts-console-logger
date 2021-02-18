@@ -29,17 +29,17 @@ export interface IConstraints {
 }
 
 export interface IDeviceManager {
-  getCameraList (): Promise<Array<MediaDeviceInfo>|IError>;
+  getCameraList (): Promise<Array<MediaDeviceInfo>>;
 
-  getMicList (): Promise<Array<MediaDeviceInfo>|IError>;
+  getMicList (): Promise<Array<MediaDeviceInfo>>;
 
-  getAudioTrack (constraints: IConstraints): Promise<MediaStreamTrack | IError>;
+  getAudioTrack (constraints: IConstraints): Promise<MediaStreamTrack>;
 
-  getVideoTrack (constraints: IConstraints): Promise<MediaStreamTrack | IError>;
+  getVideoTrack (constraints: IConstraints): Promise<MediaStreamTrack>;
 
-  getScreenTrack (constraints: IConstraints): Promise<Array<MediaStreamTrack> | IError>;
+  getScreenTrack (constraints: IConstraints): Promise<Array<MediaStreamTrack>>;
   
-  getMediaStream(): Promise<MediaStream | IError>;
+  getMediaStream(): Promise<MediaStream>;
 
   releaseAllStream(): void;
 }

@@ -3,19 +3,14 @@
     "target": "es5" ,
     "module": "commonjs" ,
     "lib": [
-    "es6",
-    "dom",
-    "es2015.promise"
-    ] ,
-    "allowJs": false ,
-    "checkJs": false ,
-    "sourceMap": true ,
-    "outDir": "./dist/" ,
-    "removeComments": true ,
+      "es5",
+      "es6",
+      "dom",
+      "ES2015.Promise"
+    ],
     "strict": true ,
-    "noImplicitAny": false ,
-    "baseUrl": "./" ,
-    "esModuleInterop": true 
-  },
-  "exclude": ["build", "dist", "out", "*.config.js"]
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "forceConsistentCasingInFileNames": true,
+  }
 }
