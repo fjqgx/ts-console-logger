@@ -24,9 +24,9 @@ declare namespace DeviceManager {
     height ?: number;
   }
   
-  export interface IConstraints {
-    audio ?: boolean | IAudioConstraints;
-    video ?: boolean | IVideoConstraints;
+  export interface IScreenConstraints {
+    audio ?: boolean;
+    video ?: boolean;
   }
   
   export class BrowserDeviceManager {
@@ -37,9 +37,9 @@ declare namespace DeviceManager {
   
     getAudioTrack (constraints: IAudioConstraints): Promise<MediaStreamTrack>;
   
-    getVideoTrack (constraints: IConstraints): Promise<MediaStreamTrack>;
+    getVideoTrack (constraints: IVideoConstraints): Promise<MediaStreamTrack>;
 
-    getScreenTrack (constraints: IConstraints): Promise<MediaStreamTrack>;
+    getScreenTrack (constraints: IScreenConstraints): Promise<MediaStream>;
   }
 }
 

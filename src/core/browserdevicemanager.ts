@@ -1,6 +1,6 @@
 
 import { SystemUtil } from "../util/system";
-import { IAudioConstraints, IConstraints, IDeviceManager, IError, IVideoConstraints } from "./interface";
+import { IAudioConstraints, IDeviceManager, IError, IScreenConstraints, IVideoConstraints } from "./interface";
 import { AndroidDeviceManager } from "./manager/androiddevicemanager";
 import { BaseDeviceManager } from "./manager/basedevicemanager";
 import { IosDeviceManager } from "./manager/iosdevicemanager";
@@ -30,13 +30,11 @@ export class BrowserDeviceManager implements IDeviceManager {
     return this.deviceManager.getAudioTrack(constraints);
   }
 
-
-
   public getVideoTrack (constraints: IVideoConstraints): Promise<MediaStreamTrack> {
     return this.deviceManager.getVideoTrack(constraints);
   }
 
-  public getScreenTrack (constraints: IConstraints): Promise<Array<MediaStreamTrack>> {
+  public getScreenTrack (constraints: IScreenConstraints): Promise<MediaStream> {
     return this.deviceManager.getScreenTrack(constraints);
   }
 

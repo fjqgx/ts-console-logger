@@ -1,19 +1,23 @@
 
 import { DeviceError, ErrorCode } from "../error";
-import { IAudioConstraints, IConstraints, IDeviceManager, IError, IVideoConstraints } from "../interface";
+import { IAudioConstraints, IDeviceManager, IError, IScreenConstraints, IVideoConstraints } from "../interface";
+
+declare global {
+  interface MediaDevices {
+    getDisplayMedia(constraints?: MediaStreamConstraints): Promise<MediaStream>;
+  }
+}
 
 enum DeviceType {
   Camera = "videoinput",
   Mic = "audioinput",
+  Screen = "screen",
 }
 
 export class BaseDeviceManager implements IDeviceManager {
 
-  protected mediaStream: MediaStream;
-
-
   constructor () {
-    this.mediaStream = new MediaStream();
+
   }
 
   public getCameraList (): Promise<Array<MediaDeviceInfo>> {
@@ -51,22 +55,6 @@ export class BaseDeviceManager implements IDeviceManager {
       }
     })
   }
-
-  // public getMediaStream(): Promise<MediaStream> {
-  //   return new Promise((resolve, reject) => {
-  //     if (this.checkSupport()) {
-  //       navigator.mediaDevices.getUserMedia({video: true}).then((mediastream) => {
-  //         this.mediaStream = mediastream;
-  //         resolve(mediastream);
-  //       }).catch((err) => {
-  //         reject(this.parseError(DeviceType.Camera, err))
-  //       })
-  //     } else {
-  //       reject(new DeviceError(ErrorCode.ERROR_DEVICE_NOTSUPPORT, "not support navigator.mediaDevices"))
-  //     }
-  //   })
-  // }
-
 
   public getAudioTrack (constraints?: IAudioConstraints): Promise<MediaStreamTrack> {
     return new Promise((resolve, reject) => {
@@ -106,9 +94,17 @@ export class BaseDeviceManager implements IDeviceManager {
     })
   }
 
-  public getScreenTrack (constraints: IConstraints): Promise<Array<MediaStreamTrack>> {
+  public getScreenTrack (constraints: IScreenConstraints): Promise<MediaStream> {
     return new Promise((resolve, reject) => {
-
+      if (this.checkSupportScreenShare()) {
+        navigator.mediaDevices.getDisplayMedia(constraints).then((mediastream: MediaStream) => {
+          resolve(mediastream);
+        }).catch((err) => {
+          reject(this.parseError(DeviceType.Screen, err));
+        })
+      } else {
+        reject(new DeviceError(ErrorCode.ERROR_SCREENSHARE_NOTSUPPORT, "browser not support screenshare"))
+      }
     })
   }
 
@@ -121,11 +117,21 @@ export class BaseDeviceManager implements IDeviceManager {
   //   }
   // }
 
-  private checkSupport (): boolean {
-    if (navigator && navigator.mediaDevices && navigator.mediaDevices.enumerateDevices && navigator.mediaDevices.getUserMedia) {
-      return true
+  protected checkSupport (): boolean {
+    if (navigator && navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+      const mediaDevices = navigator.mediaDevices as any;
+      if (mediaDevices.getDisplayMedia) {
+        return true
+      }
     }
     return false
+  }
+
+  protected checkSupportScreenShare (): boolean {
+    if (navigator && navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+      return true;
+    }
+    return false;
   }
 
   protected getDeviceList (deviceType: DeviceType): Promise<Array<MediaDeviceInfo>> {

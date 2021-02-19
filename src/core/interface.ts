@@ -25,9 +25,9 @@ export interface IVideoConstraints {
   height ?: number;
 }
 
-export interface IConstraints {
-  audio ?: boolean | IAudioConstraints;
-  video ?: boolean | IVideoConstraints;
+export interface IScreenConstraints {
+  audio ?: boolean;
+  video ?: boolean;
 }
 
 export interface IDeviceManager {
@@ -39,5 +39,5 @@ export interface IDeviceManager {
 
   getVideoTrack (constraints: IVideoConstraints): Promise<MediaStreamTrack>;
 
-  getScreenTrack (constraints: IConstraints): Promise<Array<MediaStreamTrack>>;
+  getScreenTrack (constraints: IScreenConstraints): Promise<MediaStream>;
 }

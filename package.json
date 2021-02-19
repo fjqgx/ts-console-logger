@@ -1,6 +1,6 @@
 {
   "name": "browserdevicemanager",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "device management of browser",
   "main": "./dist/browserdevicemanager.js",
   "types": "types/index.d.ts",
