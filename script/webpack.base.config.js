@@ -7,7 +7,6 @@ module.exports = {
   output: {
     filename: packageinfo.name + ".js",
     path: path.resolve(__dirname, "../dist"),
-    library: "BrowserDeviceManager",
     libraryTarget: "umd"
   },
   resolve: {

@@ -1,5 +1,6 @@
+
 import { DeviceError, ErrorCode } from "../error";
-import { IConstraints, IDeviceManager, IError } from "../interface";
+import { IAudioConstraints, IConstraints, IDeviceManager, IError, IVideoConstraints } from "../interface";
 
 enum DeviceType {
   Camera = "videoinput",
@@ -51,25 +52,35 @@ export class BaseDeviceManager implements IDeviceManager {
     })
   }
 
-  public getMediaStream(): Promise<MediaStream> {
-    return new Promise((resolve, reject) => {
-      if (this.checkSupport()) {
-        navigator.mediaDevices.getUserMedia({video: true}).then((mediastream) => {
-          this.mediaStream = mediastream;
-          resolve(mediastream);
-        }).catch((err) => {
-          reject(this.parseError(DeviceType.Camera, err))
-        })
-      } else {
-        reject(new DeviceError(ErrorCode.ERROR_DEVICE_NOTSUPPORT, "not support navigator.mediaDevices"))
-      }
-    })
-  }
+  // public getMediaStream(): Promise<MediaStream> {
+  //   return new Promise((resolve, reject) => {
+  //     if (this.checkSupport()) {
+  //       navigator.mediaDevices.getUserMedia({video: true}).then((mediastream) => {
+  //         this.mediaStream = mediastream;
+  //         resolve(mediastream);
+  //       }).catch((err) => {
+  //         reject(this.parseError(DeviceType.Camera, err))
+  //       })
+  //     } else {
+  //       reject(new DeviceError(ErrorCode.ERROR_DEVICE_NOTSUPPORT, "not support navigator.mediaDevices"))
+  //     }
+  //   })
+  // }
 
-  public getAudioTrack (constraints: IConstraints): Promise<MediaStreamTrack> {
+
+  public getAudioTrack (constraints?: IAudioConstraints): Promise<MediaStreamTrack> {
     return new Promise((resolve, reject) => {
       if (this.checkSupport()) {
-        navigator.mediaDevices.getUserMedia({audio: true}).then((mediastream) => {
+        let audioConstraints: { 
+          audio ?: boolean;
+          deviceId ?: string;
+        };
+        if (constraints && constraints.deviceId) {
+          audioConstraints = { deviceId: constraints.deviceId}
+        } else {
+          audioConstraints = { audio: true };
+        }
+        navigator.mediaDevices.getUserMedia(audioConstraints).then((mediastream) => {
           resolve(mediastream.getAudioTracks()[0]);
         }).catch((err) => {
           reject(this.parseError(DeviceType.Mic, err));
@@ -80,10 +91,11 @@ export class BaseDeviceManager implements IDeviceManager {
     })
   }
 
-  public getVideoTrack (constraints: IConstraints): Promise<MediaStreamTrack> {
+  public getVideoTrack (constraints: IVideoConstraints): Promise<MediaStreamTrack> {
     return new Promise((resolve, reject) => {
       if (this.checkSupport()) {
-        navigator.mediaDevices.getUserMedia({video: true}).then((mediastream) => {
+        let videoConstraints = this.createVideoConstraints(constraints);
+        navigator.mediaDevices.getUserMedia(videoConstraints).then((mediastream) => {
           resolve(mediastream.getVideoTracks()[0]);
         }).catch((err) => {
           reject(this.parseError(DeviceType.Camera, err))
@@ -100,14 +112,14 @@ export class BaseDeviceManager implements IDeviceManager {
     })
   }
 
-  public releaseAllStream(): void {
-    if (this.mediaStream) {
-      this.mediaStream.getTracks().forEach((track) => {
-        this.mediaStream.removeTrack(track);
-        track.stop();
-      })
-    }
-  }
+  // public releaseAllStream(): void {
+  //   if (this.mediaStream) {
+  //     this.mediaStream.getTracks().forEach((track) => {
+  //       this.mediaStream.removeTrack(track);
+  //       track.stop();
+  //     })
+  //   }
+  // }
 
   private checkSupport (): boolean {
     if (navigator && navigator.mediaDevices && navigator.mediaDevices.enumerateDevices && navigator.mediaDevices.getUserMedia) {
@@ -152,8 +164,27 @@ export class BaseDeviceManager implements IDeviceManager {
   }
 
   protected parseError (deviceType: DeviceType, err:Error): IError {
-
-
     return new DeviceError(ErrorCode.ERROR_DEVICE_UNKNOWNERROR, "");
+  }
+
+  /**
+   * processing parameters
+   * 
+   * @param constraints 
+   */
+  protected createVideoConstraints(constraints: IVideoConstraints): MediaStreamConstraints {
+    let videoConstraints: MediaStreamConstraints;
+    if (!constraints.deviceId && !constraints.width && !constraints.height) {
+      videoConstraints = { video: true };
+    } else {
+      videoConstraints = {
+        video: {
+          deviceId: constraints.deviceId,
+          width: constraints.width,
+          height: constraints.height
+        }
+      };
+    }
+    return videoConstraints;
   }
 }

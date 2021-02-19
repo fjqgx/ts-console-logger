@@ -21,6 +21,8 @@ export interface IAudioConstraints {
 export interface IVideoConstraints {
   deviceId ?: string;
   facingMode ?: FacingMode;
+  width ?: number;
+  height ?: number;
 }
 
 export interface IConstraints {
@@ -33,13 +35,9 @@ export interface IDeviceManager {
 
   getMicList (): Promise<Array<MediaDeviceInfo>>;
 
-  getAudioTrack (constraints: IConstraints): Promise<MediaStreamTrack>;
+  getAudioTrack (constraints?: IAudioConstraints): Promise<MediaStreamTrack>;
 
-  getVideoTrack (constraints: IConstraints): Promise<MediaStreamTrack>;
+  getVideoTrack (constraints: IVideoConstraints): Promise<MediaStreamTrack>;
 
   getScreenTrack (constraints: IConstraints): Promise<Array<MediaStreamTrack>>;
-  
-  getMediaStream(): Promise<MediaStream>;
-
-  releaseAllStream(): void;
 }

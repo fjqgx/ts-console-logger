@@ -9,18 +9,23 @@
       <span>video device list</span>
       <select id="camera-select"></select>
       <button id="camera-button">getCameraList</button>
+      <span>width:</span>
+      <input id="video-width" value="640" >
+      <span>height:</span>
+      <input id="video-height" value="480" >
       <button id="camera-video-button">get camera</button>
-
+    </P>
+    <p>
       <span>audio device list</span>
       <select id="audio-select"></select>
       <button id="audio-button">getMicList</button>
 
       <button id="release-button" >release device</button>
-    </P>
+    </p>
     <p>
       <tr>
         <td>
-          <video id="camera-video" style="width: 640px; height: 480px;" autoplay></video>
+          <video id="camera-video" style="width: 640px; height: 480px;" autoplay controls></video>
           <button id="camera-video-stop-button">stop</button>
         </td>
       </tr>
@@ -36,6 +41,8 @@
     let audioButton = document.getElementById("audio-button");
     let audioSelect = document.getElementById("audio-select");
     let releaseButton = document.getElementById("release-button");
+    let videoWidthInput = document.getElementById("video-width");
+    let videoHeightInput = document.getElementById("video-height");
 
     let cameraVideo = document.getElementById("camera-video");
     let cameraVideoStopButton = document.getElementById("camera-video-stop-button");
@@ -51,7 +58,15 @@
     })
 
     cameraVideoBtuuton.addEventListener("click", () => {
-      devicemanager.getVideoTrack({}).then((videotrack) => {
+      let constraints = {
+        width: videoWidthInput.value,
+        height: videoHeightInput.value
+      }
+
+      if (cameraSelect.selectedIndex > -1) {
+        constraints.deviceId = cameraSelect.options[cameraSelect.selectedIndex].value
+      }
+      devicemanager.getVideoTrack(constraints).then((videotrack) => {
         let mediastream = new MediaStream();
         mediastream.addTrack(videotrack);
         cameraVideo.srcObject = mediastream;

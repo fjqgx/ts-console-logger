@@ -13,13 +13,15 @@ declare namespace DeviceManager {
     reason: string;
   }
   
-  export interface IAudioConstraints {
+  export interface IAudioConstraints {  
     deviceId: string;
   }
   
   export interface IVideoConstraints {
     deviceId ?: string;
     facingMode ?: FacingMode;
+    width ?: number;
+    height ?: number;
   }
   
   export interface IConstraints {
@@ -33,9 +35,11 @@ declare namespace DeviceManager {
   
     getMicList (): Promise<Array<MediaDeviceInfo>>;
   
-    getAudioTrack (constraints: IConstraints): Promise<MediaStreamTrack>;
+    getAudioTrack (constraints: IAudioConstraints): Promise<MediaStreamTrack>;
   
     getVideoTrack (constraints: IConstraints): Promise<MediaStreamTrack>;
+
+    getScreenTrack (constraints: IConstraints): Promise<MediaStreamTrack>;
   }
 }
 
